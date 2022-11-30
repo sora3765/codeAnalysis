@@ -8,6 +8,10 @@ import { SaveModal } from '../components/save_modal'
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
 
+import AceEditor from "react-ace";
+
+
+
 const { useState } = React
 
 
@@ -38,6 +42,8 @@ const TextArea = styled.textarea`
   width: 50vw;
 `
 
+
+
 const Preview = styled.div`
   border-top: 1px solid silver;
   bottom: 0;
@@ -48,11 +54,30 @@ const Preview = styled.div`
   top: 0;
   width: 50vw;
 `
+
+const Preview2 = styled.div`
+  border-top: 1px solid silver;
+  bottom: 0;
+  overflow-y: scroll;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  top: 30%;
+  width: 50vw;
+  white-space: pre-line;
+  `
+const Flex = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const HeaderControl = styled.div`
     height: 2rem;
     display: flex;
     align-content: center;
   `
+
+  
 
   interface Props {
     text: string
@@ -67,7 +92,7 @@ const HeaderControl = styled.div`
   return (
     <>
       <HeaderArea>
-          <Header title="Markdown Editor">
+          <Header title="CodeAnalysis Editor">
             <Button onClick={() => setShowModal(true)}>
               保存する
             </Button>
@@ -77,13 +102,21 @@ const HeaderControl = styled.div`
             </Header>
         </HeaderArea>
       <Wrapper>
+        
       <TextArea
             onChange={(event) => setText(event.target.value)}
             value={text}
           />
+        <Flex>
         <Preview>
-            <ReactMarkdown>{text}</ReactMarkdown>
+            <>{text}</>
+            <br></br>
+            <Preview2>
+               {textChange(text)}
+            </Preview2>
         </Preview>
+
+       </Flex>
       </Wrapper>
       {showModal && (
           <SaveModal
@@ -96,4 +129,76 @@ const HeaderControl = styled.div`
         )}
     </>
   )
+}
+/**
+ * {
+              (function () {
+                let textChanged:string= ""
+                textChanged = textChange(text)
+                let spli: string[] = [];
+                spli = textChanged.split(/\n/)
+                console.log(spli)
+                for (let i = 0; i < spli.length; i++) {
+                   if(spli[i]=="<hr>"){
+                    
+                   }
+                   return spli[i]
+                }
+              }())
+            }
+ */
+
+let textMain:string[] = new Array();
+//let textMainHtml:string = ""
+
+function textChange(text1: any):any{
+  let spli: string[] = [];
+  spli = text1.split(/\n|"| /)
+  let spilCopy = spli.slice()
+  searchPhp(spli)
+  spli.filter(Number.isFinite)
+  console.log(textMain)
+  //console.log(spli)
+  //text1 = spli.join('\n')
+  let textMainHtml:string = ""
+  text1 = textMain.join('\n')
+  console.log(text1)
+  console.log(textMain[0])
+  for(var i = 0;i<textMain.length;i++){
+    if(textMain[i] == "<hr>"){
+      textMainHtml = textMainHtml+'<hr></hr>'
+    }else{
+      textMainHtml = textMainHtml+textMain[i]
+    }
+  }
+  console.log(textMainHtml)
+  return <h2>{text1}</h2>
+}
+
+
+function searchPhp(text2: any):any{
+  textMain = [];
+  for(var i = 0;i<10;i++){
+     if(text2[i] == '<php?'){
+      text2[i]="php開始"
+      text2.splice(i+1,0,"\n")
+      textMain.push("php 開始")
+      textMain.push("<hr>")
+      //textMain.push('<hr size="10">')
+     }else if(text2[i] == '?>'){
+      text2[i]="php終了"
+      textMain.push("php 終了")
+     }else if(text2[i] == 'echo' ){
+      text2[i]="出力↓"
+      textMain.push("出力↓")
+      for(var j = 1;;j++){
+        if(text2[i+j] == ""){
+        }else{
+          textMain.push(text2[i+j])
+          break
+        }
+      }
+     }
+  }
+  return text2
 }
