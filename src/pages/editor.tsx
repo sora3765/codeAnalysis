@@ -8,7 +8,16 @@ import { SaveModal } from '../components/save_modal'
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
 
+import { EditorState } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
+
+
 import AceEditor from "react-ace";
+import { javascript } from 'webpack'
+
+//text1のHTML化
+import parse from 'html-react-parser';
+
 
 
 
@@ -40,12 +49,16 @@ const TextArea = styled.textarea`
   position: absolute;
   top: 0;
   width: 50vw;
+
+color:white;
+border:none;
+background:#939394;
 `
 
 
 
 const Preview = styled.div`
-  border-top: 1px solid silver;
+  border-top: 3px solid silver;
   bottom: 0;
   overflow-y: scroll;
   padding: 1rem;
@@ -56,16 +69,31 @@ const Preview = styled.div`
 `
 
 const Preview2 = styled.div`
-  border-top: 1px solid silver;
+  border-top: 5px solid silver;
   bottom: 0;
   overflow-y: scroll;
   padding: 1rem;
   position: absolute;
   right: 0;
-  top: 30%;
+  top: 40%;
   width: 50vw;
   white-space: pre-line;
+  >h2 {
+  color: mediumseagreen;
+  }
   `
+const Preview3 = styled.div`
+border-top: 3px solid silver;
+bottom: 0;
+overflow-y: scroll;
+padding: 1rem;
+position: absolute;
+right: 0;
+top: 0;
+width: 50vw;
+white-space: pre-line;
+`
+
 const Flex = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,6 +106,7 @@ const HeaderControl = styled.div`
   `
 
   
+  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br> ?> </h3>'
 
   interface Props {
     text: string
@@ -92,7 +121,7 @@ const HeaderControl = styled.div`
   return (
     <>
       <HeaderArea>
-          <Header title="CodeAnalysis Editor">
+          <Header title="CodeAnalysis Editor(PHPVer)">
             <Button onClick={() => setShowModal(true)}>
               保存する
             </Button>
@@ -109,8 +138,9 @@ const HeaderControl = styled.div`
           />
         <Flex>
         <Preview>
-            <>{text}</>
-            <br></br>
+            <Preview3>
+            {parse(text3)}
+            </Preview3>
             <Preview2>
                {textChange(text)}
             </Preview2>
@@ -149,6 +179,7 @@ const HeaderControl = styled.div`
  */
 
 let textMain:string[] = new Array();
+let dara:string[] = new Array();
 //let textMainHtml:string = ""
 
 function textChange(text1: any):any{
@@ -171,34 +202,48 @@ function textChange(text1: any):any{
       textMainHtml = textMainHtml+textMain[i]
     }
   }
-  console.log(textMainHtml)
-  return <h2>{text1}</h2>
+  //console.log(textMainHtml)
+  console.log(text1)
+  return <h2>{parse(text1)}</h2>
 }
 
 
 function searchPhp(text2: any):any{
   textMain = [];
-  for(var i = 0;i<10;i++){
-     if(text2[i] == '<php?'){
+  var d = "$"
+  try{
+  for(var i = 0;i<text2.length;i++){
+    var e = text2[i]
+     if(text2[i] == '<?php'){
       text2[i]="php開始"
-      text2.splice(i+1,0,"\n")
+      // text2.splice(i+1,0,"\n")
       textMain.push("php 開始")
       textMain.push("<hr>")
       //textMain.push('<hr size="10">')
      }else if(text2[i] == '?>'){
-      text2[i]="php終了"
+      text2[i]="php終了" 
+      textMain.push("<hr>")
       textMain.push("php 終了")
      }else if(text2[i] == 'echo' ){
       text2[i]="出力↓"
       textMain.push("出力↓")
-      for(var j = 1;;j++){
-        if(text2[i+j] == ""){
-        }else{
-          textMain.push(text2[i+j])
-          break
-        }
-      }
+     }else if(text2[i]==";"){
+      textMain
+     }else if(text2[i]==""){
+      
+     }else{
+      textMain.push(text2[i])
      }
   }
   return text2
+} catch (e: unknown) {
+  if (e instanceof Error) {
+    console.error(e.message);
+  }
+}
+}
+
+
+function inHtml(text1: any):any{
+  let inhtml = ""
 }

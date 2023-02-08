@@ -45,7 +45,7 @@ export const SaveModal: React.FC<Props> = props => {
   return (
     <Wrapper>
       <Modal>
-        <p>テキストの内容を保存します。</p>
+        <p>コードの内容を保存します。</p>
         <p>保存内容のタイトルを入力して「保存」ボタンを押してください。</p>
         <p>
           <TitleInput
