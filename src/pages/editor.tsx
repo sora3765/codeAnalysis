@@ -78,9 +78,9 @@ const Preview2 = styled.div`
   top: 40%;
   width: 50vw;
   white-space: pre-line;
-  >h2 {
+  /* >h2 {
   color: mediumseagreen;
-  }
+  } */
   `
 const Preview3 = styled.div`
 border-top: 3px solid silver;
@@ -106,7 +106,7 @@ const HeaderControl = styled.div`
   `
 
   
-  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br> ?> </h3>'
+  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br>echo "b"<br>$i="a" <br>?> </h3>'
 
   interface Props {
     text: string
@@ -195,6 +195,7 @@ function textChange(text1: any):any{
   text1 = textMain.join('\n')
   console.log(text1)
   console.log(textMain[0])
+  console.log(dara)
   for(var i = 0;i<textMain.length;i++){
     if(textMain[i] == "<hr>"){
       textMainHtml = textMainHtml+'<hr></hr>'
@@ -217,22 +218,33 @@ function searchPhp(text2: any):any{
      if(text2[i] == '<?php'){
       text2[i]="php開始"
       // text2.splice(i+1,0,"\n")
-      textMain.push("php 開始")
+      textMain.push("<font color='red'>php 開始</font>")
       textMain.push("<hr>")
       //textMain.push('<hr size="10">')
      }else if(text2[i] == '?>'){
       text2[i]="php終了" 
       textMain.push("<hr>")
-      textMain.push("php 終了")
+      textMain.push("<font color='red'>php 終了</font>")
      }else if(text2[i] == 'echo' ){
       text2[i]="出力↓"
-      textMain.push("出力↓")
+      textMain.push("<font color=rgb(60, 179, 113)>出力↓</font>")
+      for(var j=0;text2[i+j]==";";j++){
+      textMain.push(text2[i+j])
+      i=i+1
+      }
      }else if(text2[i]==";"){
-      textMain
-     }else if(text2[i]==""){
+
+     }else if(text2[i]=="$"){
+      
+     }else if(text2[i].indexOf(d)===0){
+
+      textMain.push("変数<font color=#eb2698>"+text2[i]+"</font>に<font color=#eb2698>"+text2[i+1]+"</font>を代入")
+      i++
       
      }else{
-      textMain.push(text2[i])
+      if(text2[i]!=""){
+        textMain.push(text2[i])
+      }
      }
   }
   return text2
