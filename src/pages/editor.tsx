@@ -1,12 +1,12 @@
 import * as React from 'react'
 import styled from 'styled-components'
 import { useStateWithStorage } from '../hooks/use_state_with_storage'
-import * as ReactMarkdown from 'react-markdown'
 import { putMemo } from '../indexeddb/memos'
 import { Button } from '../components/button'  
 import { SaveModal } from '../components/save_modal'
 import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
+
 
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
@@ -17,6 +17,7 @@ import { javascript } from 'webpack'
 
 //text1のHTML化
 import parse from 'html-react-parser';
+
 
 
 
@@ -58,6 +59,8 @@ background:#939394;
 
 
 const Preview = styled.div`
+display: flex;
+  flex-direction: column;
   border-top: 3px solid silver;
   bottom: 0;
   overflow-y: scroll;
@@ -71,11 +74,12 @@ const Preview = styled.div`
 const Preview2 = styled.div`
   border-top: 5px solid silver;
   bottom: 0;
+  flex-grow: 3; flex-basis: 0;
   overflow-y: scroll;
   padding: 1rem;
-  position: absolute;
+  
   right: 0;
-  top: 40%;
+  top: 30%;
   width: 50vw;
   white-space: pre-line;
   /* >h2 {
@@ -83,11 +87,11 @@ const Preview2 = styled.div`
   } */
   `
 const Preview3 = styled.div`
-border-top: 3px solid silver;
+
 bottom: 0;
+flex-grow: 1; flex-basis: 0;
 overflow-y: scroll;
 padding: 1rem;
-position: absolute;
 right: 0;
 top: 0;
 width: 50vw;
@@ -105,8 +109,10 @@ const HeaderControl = styled.div`
     align-content: center;
   `
 
-  
-  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br>echo "b"<br>$i="a" <br>?> </h3>'
+
+
+  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br>echo "b";<br>$i="a";<br>$b="b";<br>for($i=1,$i<5,$i++){<br>echo $i ;<br>}<br>?> </h3>'
+  // const text3='<Tooltip title="Copy to Clipboard" placement="top" arrow><IconButton color="primary" size="small" onClick={() => copyToClipboard()}><ContentCopyIcon fontSize="small" /></IconButton></Tooltip><Button onClick={handleCloseDialog}>閉じる</Button>'
 
   interface Props {
     text: string
@@ -115,7 +121,6 @@ const HeaderControl = styled.div`
 
   export const Editor: React.FC<Props> = (props) => {
     const { text, setText } = props
-
     const [showModal, setShowModal] = useState(false)
 
   return (
@@ -136,7 +141,7 @@ const HeaderControl = styled.div`
             onChange={(event) => setText(event.target.value)}
             value={text}
           />
-        <Flex>
+        
         <Preview>
             <Preview3>
             {parse(text3)}
@@ -145,8 +150,7 @@ const HeaderControl = styled.div`
                {textChange(text)}
             </Preview2>
         </Preview>
-
-       </Flex>
+       
       </Wrapper>
       {showModal && (
           <SaveModal
@@ -212,6 +216,8 @@ function textChange(text1: any):any{
 function searchPhp(text2: any):any{
   textMain = [];
   var d = "$"
+  var fo= "for"
+  var forin=0
   try{
   for(var i = 0;i<text2.length;i++){
     var e = text2[i]
@@ -234,12 +240,31 @@ function searchPhp(text2: any):any{
       }
      }else if(text2[i]==";"){
 
+     }else if(text2[i].indexOf(fo)===0){
+      textMain.push("<hr color='#4785f8'>")
+      textMain.push("<font color=#4785f8>ループ</font>"+text2[i].slice(3))
+      forin=1
+     }else if(text2[i]=="}"){
+      if(forin==1){
+        textMain.push("}")
+        textMain.push("<hr color='#4785f8'>")
+        forin=0
+      }else{
+        textMain.push(text2[i])
+      }
      }else if(text2[i]=="$"){
       
      }else if(text2[i].indexOf(d)===0){
-
+      if(dara.includes(text2[i])===false){
       textMain.push("変数<font color=#eb2698>"+text2[i]+"</font>に<font color=#eb2698>"+text2[i+1]+"</font>を代入")
-      i++
+        dara.push(text2[i].slice( 0, -1))
+        dara.push(text2[i+1])
+        i++
+      }else{
+        var da= dara.indexOf(text2[i+1])
+        textMain.push("<font color='#eb2698'>"+text2[i]+"</font>")
+        
+      }
       
      }else{
       if(text2[i]!=""){
@@ -254,6 +279,7 @@ function searchPhp(text2: any):any{
   }
 }
 }
+
 
 
 function inHtml(text1: any):any{
