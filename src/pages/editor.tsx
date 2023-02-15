@@ -111,7 +111,7 @@ const HeaderControl = styled.div`
 
 
 
-  const text3='<h2>サンプル用コード</h2> &lt;?php <br> echo "a"; <br>echo "b";<br>$i="a";<br>$b="b";<br>for($i=1,$i<5,$i++){<br>echo $i ;<br>}<br>?> </h3>'
+  const text3='<h2>サンプル用コード(コピペしてお試しください)</h2> &lt;?php <br> echo "a"; <br>echo "b";<br>$i="4";<br>$b="b";<br>if($<10){<br> for($i=1,$i<5,$i++){<br> echo $i ;<br> }<br>}else{<br> echo "err";<br>}<br>?> </h3>'
   // const text3='<Tooltip title="Copy to Clipboard" placement="top" arrow><IconButton color="primary" size="small" onClick={() => copyToClipboard()}><ContentCopyIcon fontSize="small" /></IconButton></Tooltip><Button onClick={handleCloseDialog}>閉じる</Button>'
 
   interface Props {
@@ -217,14 +217,18 @@ function searchPhp(text2: any):any{
   textMain = [];
   var d = "$"
   var fo= "for"
+  var ifin= "if"
   var forin=0
+  var ifin_count=0
+  var if_nakami=""
+  var el="else"
   try{
   for(var i = 0;i<text2.length;i++){
     var e = text2[i]
      if(text2[i] == '<?php'){
       text2[i]="php開始"
       // text2.splice(i+1,0,"\n")
-      textMain.push("<font color='red'>php 開始</font>")
+      textMain.push("<font color='red' >php 開始</font>")
       textMain.push("<hr>")
       //textMain.push('<hr size="10">')
      }else if(text2[i] == '?>'){
@@ -249,6 +253,10 @@ function searchPhp(text2: any):any{
         textMain.push("}")
         textMain.push("<hr color='#4785f8'>")
         forin=0
+      }else if(ifin_count==1){
+        textMain.push("}")
+        textMain.push("<hr color='#a09d0f'>")
+        ifin_count=0
       }else{
         textMain.push(text2[i])
       }
@@ -261,11 +269,17 @@ function searchPhp(text2: any):any{
         dara.push(text2[i+1])
         i++
       }else{
-        var da= dara.indexOf(text2[i+1])
+        // var da= dara.indexOf(text2[i+1])
         textMain.push("<font color='#eb2698'>"+text2[i]+"</font>")
         
       }
-      
+     }else if(text2[i].includes(el)===true){
+      textMain.push("<font color='#a09d0f'>if("+if_nakami+")に当てはまらなかったら</font>")
+     }else if(text2[i].indexOf(ifin)===0){ 
+        textMain.push("<hr color='#a09d0f'>")
+        textMain.push("<font color='#a09d0f'>もし(if)"+text2[i].slice(2)+"なら</font>")
+        ifin_count=1
+        if_nakami=text2[i].slice(2,-1)
      }else{
       if(text2[i]!=""){
         textMain.push(text2[i])
