@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom'
 import { Header } from '../components/header'
 
 
-import { EditorState } from '@codemirror/state'
-import { EditorView } from '@codemirror/view'
+// import { EditorState } from '@codemirror/state'
+// import { EditorView } from '@codemirror/view'
+// import CodeMirror from '@uiw/react-codemirror'
+
 
 
 import AceEditor from "react-ace";
@@ -55,7 +57,6 @@ color:white;
 border:none;
 background:#939394;
 `
-
 
 
 const Preview = styled.div`
@@ -111,7 +112,7 @@ const HeaderControl = styled.div`
 
 
 
-  const text3='<h2>サンプル用コード(コピペしてお試しください)</h2> &lt;?php <br> echo "a"; <br>echo "b";<br>$i="4";<br>$b="b";<br>if($<10){<br> for($i=1,$i<5,$i++){<br> echo $i ;<br> }<br>}else{<br> echo "err";<br>}<br>?> </h3>'
+  const text3='<h2>サンプル用コード(コピペしてお試しください)</h2> &lt;?php <br> echo "a"; <br>echo "b";<br>$i="4";<br>$b="b";<br>if($i<10){<br> for($i=1,$i<5,$i++){<br> echo $i ;<br> }<br>}else{<br> echo "err";<br>}<br>?> </h3>'
   // const text3='<Tooltip title="Copy to Clipboard" placement="top" arrow><IconButton color="primary" size="small" onClick={() => copyToClipboard()}><ContentCopyIcon fontSize="small" /></IconButton></Tooltip><Button onClick={handleCloseDialog}>閉じる</Button>'
 
   interface Props {
@@ -136,12 +137,12 @@ const HeaderControl = styled.div`
             </Header>
         </HeaderArea>
       <Wrapper>
+
         
       <TextArea
             onChange={(event) => setText(event.target.value)}
             value={text}
-          />
-        
+      />
         <Preview>
             <Preview3>
             {parse(text3)}

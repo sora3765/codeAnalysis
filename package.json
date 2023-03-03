@@ -20,6 +20,7 @@
         "@types/react-dom": "^17.0.17",
         "@types/react-router-dom": "^5.3.3",
         "@types/styled-components": "^5.1.26",
+        "@uiw/react-codemirror": "^4.19.9",
         "dexie": "^3.2.2",
         "html-react-parser": "^3.0.8",
         "react": "^17.0.2",
